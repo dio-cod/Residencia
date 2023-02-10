@@ -1,0 +1,188 @@
+# This is an auto-generated Django model module.
+# You'll have to do the following manually to clean this up:
+#   * Rearrange models' order
+#   * Make sure each model has one field with primary_key=True
+#   * Make sure each ForeignKey and OneToOneField has `on_delete` set to the desired behavior
+#   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
+# Feel free to rename the models, but don't rename db_table values or field names.
+from django.db import models
+
+# Create your models here.
+
+
+class TabDependencia(models.Model):
+    dep_id = models.AutoField(primary_key=True)
+    dep_nomb = models.CharField(max_length=100)
+    dep_siglas = models.CharField(max_length=10)
+    dep_direccon = models.CharField(max_length=150)
+    dep_localidad = models.CharField(max_length=50)
+    dep_tel = models.CharField(max_length=10)
+    dep_correo = models.CharField(max_length=100)
+    dep_fktipo = models.ForeignKey('TabTipodependencia', models.DO_NOTHING, db_column='dep_fktipo')
+    dep_fkenlace = models.ForeignKey('TabMiembro', models.DO_NOTHING, db_column='dep_fkenlace')
+
+    class Meta:
+        db_table = 'tab_dependencia'
+
+
+class TabDescgrupo(models.Model):
+    dg_id = models.AutoField(primary_key=True)
+    field_dg_fkgrupo = models.ForeignKey('TabGrupo', models.DO_NOTHING, db_column=' dg_fkgrupo')  # Field renamed to remove unsuitable characters. Field renamed because it started with '_'.
+    dg_fkmiemb = models.ForeignKey('TabMiembro', models.DO_NOTHING, db_column='dg_fkmiemb')
+    dg_fkestatus = models.ForeignKey('TabEstatus', models.DO_NOTHING, db_column='dg_fkestatus')
+
+    class Meta:
+        db_table = 'tab_descgrupo'
+
+
+class TabDescnodo(models.Model):
+    dn_id = models.AutoField(primary_key=True)
+    dn_fknodo = models.ForeignKey('TabNodo', models.DO_NOTHING, db_column='dn_fknodo')
+    dn_fkmiemb = models.ForeignKey('TabMiembro', models.DO_NOTHING, db_column='dn_fkmiemb')
+    dn_fkestatus = models.ForeignKey('TabEstatus', models.DO_NOTHING, db_column='dn_fkestatus')
+
+    class Meta:
+        db_table = 'tab_descnodo'
+
+
+class TabDescproyec(models.Model):
+    dn_id = models.AutoField(primary_key=True)
+    dn_fknodo = models.ForeignKey('TabProyecto', models.DO_NOTHING, db_column='dn_fknodo')
+    dn_fkmiemb = models.ForeignKey('TabMiembro', models.DO_NOTHING, db_column='dn_fkmiemb')
+    dn_fkestatus = models.ForeignKey('TabEstatus', models.DO_NOTHING, db_column='dn_fkestatus')
+
+    class Meta:
+        db_table = 'tab_descproyec'
+
+
+class TabDescreunion(models.Model):
+    desr_id = models.AutoField(primary_key=True)
+    desr_fkmiem = models.ForeignKey('TabMiembro', models.DO_NOTHING, db_column='desr_fkmiem')
+    desr_fkreu = models.ForeignKey('TabReuniong', models.DO_NOTHING, db_column='desr_fkreu')
+
+    class Meta:
+        db_table = 'tab_descreunion'
+
+
+class TabDirector(models.Model):
+    dir_id = models.AutoField(primary_key=True)
+    dir_nombre = models.CharField(max_length=150)
+    dir_tel = models.CharField(max_length=10)
+    dir_tel2 = models.CharField(max_length=10, blank=True, null=True)
+    dir_correo = models.CharField(max_length=100)
+    dir_correo2 = models.CharField(max_length=100, blank=True, null=True)
+    dir_fkdep = models.ForeignKey(TabDependencia, models.DO_NOTHING, db_column='dir_fkdep')
+
+    class Meta:
+        db_table = 'tab_director'
+
+
+class TabEstatus(models.Model):
+    est_id = models.AutoField(primary_key=True)
+    est_nomb = models.CharField(max_length=15)
+
+    class Meta:
+        db_table = 'tab_estatus'
+
+
+class TabGradoacad(models.Model):
+    grado_id = models.AutoField(primary_key=True)
+    grado_nomb = models.CharField(max_length=15)
+
+    class Meta:
+        db_table = 'tab_gradoacad'
+
+
+class TabGrupo(models.Model):
+    grup = models.OneToOneField('TabProyecto', models.DO_NOTHING, primary_key=True)
+    grup_nom = models.CharField(max_length=150)
+    grup_fechac = models.DateField()
+    grup_fechat = models.DateField()
+    grup_desc = models.TextField(blank=True, null=True)
+    grup_integrante = models.IntegerField()
+    grup_fkenlace = models.ForeignKey('TabMiembro', models.DO_NOTHING, db_column='grup_fkenlace')
+    grup_fkcoord = models.ForeignKey('TabMiembro', models.DO_NOTHING, db_column='grup_fkcoord')
+    grup_fkest = models.ForeignKey(TabEstatus, models.DO_NOTHING, db_column='grup_fkest')
+    grup_fknodo = models.IntegerField()
+
+    class Meta:
+        db_table = 'tab_grupo'
+
+
+class TabMiembro(models.Model):
+    m_id = models.AutoField(primary_key=True)
+    m_nomb = models.CharField(max_length=50)
+    m_apellido = models.CharField(max_length=50)
+    m_tel = models.CharField(max_length=10)
+    m_tel2 = models.CharField(max_length=10, blank=True, null=True)
+    m_correo = models.CharField(max_length=80)
+    m_correo2 = models.CharField(max_length=80, blank=True, null=True)
+    m_cargo = models.CharField(max_length=100)
+    m_fechains = models.DateField()
+    m_fkinst = models.ForeignKey(TabDependencia, models.DO_NOTHING, db_column='m_fkinst')
+    m_fkgenero = models.ForeignKey('TabSexo', models.DO_NOTHING, db_column='m_fkgenero')
+    m_fkgrado = models.ForeignKey(TabGradoacad, models.DO_NOTHING, db_column='m_fkgrado')
+    m_fkestatus = models.ForeignKey(TabEstatus, models.DO_NOTHING, db_column='m_fkestatus')
+    m_fktipo = models.ForeignKey('TabTipousuario', models.DO_NOTHING, db_column='m_fktipo')
+
+    class Meta:
+        db_table = 'tab_miembro'
+
+
+class TabNodo(models.Model):
+    nodo_id = models.AutoField(primary_key=True)
+    nodo_nombre = models.CharField(max_length=25)
+    nodo_tipo = models.CharField(max_length=15)
+    nodo_desc = models.CharField(max_length=150, blank=True, null=True)
+
+    class Meta:
+        db_table = 'tab_nodo'
+
+
+class TabProyecto(models.Model):
+    proy_id = models.AutoField(primary_key=True)
+    proy_nomb = models.CharField(max_length=25)
+    proy_tipo = models.CharField(max_length=15)
+    proy_desc = models.CharField(max_length=150, blank=True, null=True)
+    proy_fechini = models.DateField()
+    proy_fechfin = models.DateField()
+
+    class Meta:
+        db_table = 'tab_proyecto'
+
+
+class TabReuniong(models.Model):
+    reu_id = models.AutoField(primary_key=True)
+    reu_participante = models.IntegerField()
+    reu_obs = models.TextField()
+    reu_plat = models.CharField(max_length=100)
+    reu_fecha = models.DateField()
+    reu_fkgrup = models.ForeignKey(TabGrupo, models.DO_NOTHING, db_column='reu_fkgrup')
+
+    class Meta:
+        db_table = 'tab_reuniong'
+
+
+class TabSexo(models.Model):
+    sex_id = models.AutoField(primary_key=True)
+    sex_nomb = models.CharField(max_length=10)
+
+    class Meta:
+        db_table = 'tab_sexo'
+
+
+class TabTipodependencia(models.Model):
+    tipodep_id = models.AutoField(primary_key=True)
+    tipodep_nomb = models.CharField(max_length=50)
+
+    class Meta:
+        db_table = 'tab_tipodependencia'
+
+
+class TabTipousuario(models.Model):
+    tip_id = models.AutoField(primary_key=True)
+    tip_nomb = models.CharField(max_length=30)
+
+    class Meta:
+        db_table = 'tab_tipousuario'
+

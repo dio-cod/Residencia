@@ -1,0 +1,6 @@
+<h1>Formulario para registro de usuarios</h1>
+<form method="POST">
+    {%csrf_token%}
+    {{form.as_p}}
+    <button>Crear</button>
+</form>
