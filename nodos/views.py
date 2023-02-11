@@ -3,6 +3,8 @@ from django.contrib.auth import login, logout, authenticate
 from django.db import IntegrityError
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
+from .models import CustomUser
+from .forms import CustomUserCreationForm
 # Create your views here.
 
 
@@ -15,14 +17,15 @@ def home(request):
 def signup(request):
     if request.method == 'GET':
         return render(request, 'signup.html', {
-            'form': UserCreationForm
+            'form': CustomUserCreationForm
         })
     else:
         if request.POST['password1'] == request.POST['password2']:
             # register user
+            print(request.POST)
             try:
-                user = User.objects.create_user(
-                    username=request.POST['username'], password=request.POST['password1'])
+                user = CustomUser.objects.create_user(
+                    email=request.POST['email'], password=request.POST['password1'])
                 user.save()
                 login(request, user)
                 return redirect('lp')
@@ -49,11 +52,11 @@ def lp(request):
 def signin(request):
     if request.method == 'GET':
         return render(request, 'signin.html', {
-            'form': AuthenticationForm
+            'form': AuthenticationForm 
         })
     else:
         user=authenticate(
-            request, username=request.POST['username'], password=request.POST['password'])
+            request, username=request.POST['username'], password=request.POST['password']) #Aqui se llama username porque se usa el formulario de django pero es el correo
         if user is None:
             return render(request, 'signin.html', {
             'form': AuthenticationForm,
